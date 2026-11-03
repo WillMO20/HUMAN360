@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {QUESTIONS,BLOCKS} from '../js/data.js';
+import {score,norm,interpret} from '../js/engine.js';
+const all=f=>Object.fromEntries(QUESTIONS.map(q=>[q.id,f(q)]));
+assert.equal(norm(5,false),100);assert.equal(norm(1,true),100);assert.equal(norm(5,false,1,10).toFixed(1),'44.4');assert.equal(norm(7,false,0,7),100);
+const r=score(all(q=>q.max));assert.equal(r.completeness,100);
+assert.equal(r.D.find(d=>d.name==='Atención').pct,100);assert.equal(r.D.find(d=>d.name==='Procrastinación').pct,0);
+const e=score({});assert.equal(e.completeness,0);assert.equal(e.overall,null);assert.ok(e.D.every(d=>d.pct===null));
+assert.equal(score({A1:10}).M[0].insufficient,true);
+assert.equal(interpret(score(all(q=>(q.min+q.max)/2))).strengths.length,0);
+assert.equal(BLOCKS.length,3);
+console.log('scoring-tests: OK',QUESTIONS.length,'ítems');
